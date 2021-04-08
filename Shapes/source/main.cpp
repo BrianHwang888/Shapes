@@ -1,7 +1,4 @@
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-#include<stdio.h>
-#include<stdlib.h>
+#include"../header/resource_manager.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -14,8 +11,8 @@ void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos);
 float delta_time = 0.0f;
 float last_frame = 0.0f;
 
-float last_x = WINDOW_WIDTH / 2.0f;
-float last_y = WINDOW_HEIGHT / 2.0f;
+double last_x = WINDOW_WIDTH / 2.0f;
+double last_y = WINDOW_HEIGHT / 2.0f;
 bool first_mouse = true;
 
 int main(void) {
