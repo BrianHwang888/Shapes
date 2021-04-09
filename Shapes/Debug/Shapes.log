@@ -1,6 +1,2 @@
-﻿  main.cpp
-  render_object.cpp
-  resource_manager.cpp
-  shader.cpp
-  Generating Code...
+﻿  shader.cpp
   Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe

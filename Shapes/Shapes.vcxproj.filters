@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\shader">
+      <UniqueIdentifier>{ae1f5a0b-2495-4598-8c8e-8109c41a7940}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -41,5 +44,13 @@
     <ClInclude Include="header\render_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\shader\basic_vertex.glsl">
+      <Filter>Source Files\shader</Filter>
+    </None>
+    <None Include="source\shader\basic_fragment.glsl">
+      <Filter>Source Files\shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

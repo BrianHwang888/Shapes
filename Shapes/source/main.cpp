@@ -1,4 +1,5 @@
 #include"../header/resource_manager.h"
+#include"../header/shader.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -38,6 +39,9 @@ int main(void) {
 	glfwSetKeyCallback(window, keyboard_input_callback);
 	glfwSetCursorPosCallback(window, mouse_input_callback);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
+	shader_program basic_program(shader_paths[0], shader_paths[1]);
 
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

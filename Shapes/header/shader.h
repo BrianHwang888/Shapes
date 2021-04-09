@@ -7,7 +7,7 @@ class shader_program {
 public:
 	GLuint ID;
 	
-	shader_program(const char* &vertex_path, const char* &fragment_path);
+	shader_program(const char* vertex_path, const char* fragment_path);
 
 
 	void use();
