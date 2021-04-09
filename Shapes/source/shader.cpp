@@ -1,6 +1,6 @@
 #include "../header/shader.h"
 
-shader_program::shader_program(const char* vertex_path, const char* fragment_path) {
+shader_program::shader_program(const char* &vertex_path, const char* &fragment_path) {
 	const char* shader_source[2];  //[0]: vertex source; [1]: fragment source
 	GLuint* shader_IDs;
 	GLint linked;
@@ -74,3 +74,19 @@ GLuint* shader_program::compile_shader(const char** shader_paths) {
 
 	return shader_IDs;
 }
+
+/*----- Set uniform variables -----*/
+void shader_program::set_bool(const char* name, GLboolean& value) { glUniform1i(glGetUniformLocation(ID,name), value); };
+void shader_program::set_int(const char* name, GLint& value) { glUniform1i(glGetUniformLocation(ID,name), value); };
+void shader_program::set_float(const char* name, GLfloat& value) { glUniform1f(glGetUniformLocation(ID,name), value); };
+void shader_program::set_double(const char* name, GLdouble &value) { glUniform1d(glGetUniformLocation(ID,name), value); };
+
+/*----- set uniform vectors -----*/
+void shader_program::set_vec2(const char* name, const glm::vec2 &value) { glUniform2fv(glGetUniformLocation(ID, name), 1, &value[0]); };
+void shader_program::set_vec3(const char* name, const glm::vec3 &value) { glUniform3fv(glGetUniformLocation(ID,name), 1, &value[0]); };
+void shader_program::set_vec4(const char* name, const glm::vec4 &value) { glUniform4fv(glGetUniformLocation(ID,name), 1, &value[0]); };
+
+/*----- set uniform matrices ----*/
+void shader_program::set_mat2(const char* name, const glm::mat2 &value) { glUniformMatrix2fv(glGetUniformLocation(ID,name), 1, GL_FALSE, &value[0][0]); };
+void shader_program::set_mat3(const char* name, const glm::mat3 &value) { glUniformMatrix3fv(glGetUniformLocation(ID,name), 1, GL_FALSE, &value[0][0]); };
+void shader_program::set_mat4(const char* name, const glm::mat4 &value) { glUniformMatrix4fv(glGetUniformLocation(ID,name), 1, GL_FALSE, &value[0][0]); };
