@@ -41,3 +41,14 @@ void camera::process_mouse(float x_offest, float y_offset, bool constrain_pitch 
 
 	update_camera_vectors();
 };
+void camera::update_camera_vectors() {
+	glm::vec3 new_front;
+
+	new_front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	new_front.y = sin(glm::radians(pitch));
+	new_front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+	front = glm::normalize(new_front);
+	right = glm::normalize(glm::cross(front, world_up));
+	up = glm::normalize(glm::cross(right, front));	
+};
