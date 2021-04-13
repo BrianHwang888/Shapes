@@ -1,7 +1,7 @@
 /*--------------- BASE CLASS FOR ALL OBJECTS TO BE RENDERED ---------------*/
 
-#ifndef RENDER_OBJECT_H
-#define RENDER_OBJECT_H
+#ifndef __RENDER_OBJECT_H__
+#define __RENDER_OBJECT_H__
 
 #include"resource_manager.h"
 
