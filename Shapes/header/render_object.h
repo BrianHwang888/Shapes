@@ -29,7 +29,7 @@ public:
 /*-----Header for normal attribute-----*/
 class normal_delegate {
 protected:
-	virtual void gen_normal_buffer(int vertices) = 0;
+	virtual void gen_normal_buffer(int vertices, glm::vec3* position_buffer) = 0;
 };
 class has_normal : public normal_delegate {
 protected:
@@ -37,11 +37,11 @@ protected:
 
 public:
 	has_normal(int vertices);
-	void gen_normal_buffer(int vertices) override;
+	void gen_normal_buffer(int vertices, glm::vec3* position_buffer) override;
 };
 class non_normal : public normal_delegate {
 public:
-	void gen_normal_buffer(int vertices) override;
+	void gen_normal_buffer(int vertices, glm::vec3* position_buffer) override;
 };
 
 /*-----Header for abstract class render_object-----*/
@@ -54,6 +54,7 @@ protected:
 	color_delegate* color;
 	normal_delegate* normal;
 
+	render_object(int vertices, color_delegate* color, normal_delegate* normal);
 	virtual void gen_vertices_buffer() = 0;
 	
 	virtual void draw() = 0;
@@ -64,11 +65,18 @@ class shapes :public render_object {
 protected:
 	float height;
 	float base;
-	shapes();
+	shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements);
 };
 
+/*----- Header for triangle class -----*/
 class triangle :public shapes {
 public:
-	triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements);
+	triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements); //creates a right triangle by default
+
+private:
+	void gen_position_buffer();
+
+protected:
+	glm::vec3 position;
 };
 #endif
