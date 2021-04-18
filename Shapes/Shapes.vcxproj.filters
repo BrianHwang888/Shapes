@@ -36,6 +36,12 @@
     <ClCompile Include="source\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\shader.h">
@@ -48,6 +54,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
