@@ -1,5 +1,6 @@
 #include"../header/resource_manager.h"
 #include"../header/shader.h"
+#include"../header/render_object.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -42,10 +43,20 @@ int main(void) {
 
 	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
 	shader_program basic_program(shader_paths[0], shader_paths[1]);
+	float* right_triangle_measurements = new float[2];
+	right_triangle_measurements[0] = 2.0f;
+	right_triangle_measurements[1] = 2.0f;
 
+	triangle right_triangle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
+	right_triangle.set_shader_program(&basic_program);
+
+	right_triangle.gen_vertices_buffer();
+	
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+
+		right_triangle.draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

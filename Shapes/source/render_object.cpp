@@ -1,6 +1,5 @@
 #include"../header/render_object.h"
 
-void non_color::gen_color_buffer(int vertices) {};
 has_color::has_color(glm::vec4 color, int vertices) {
 	this->color = color;
 	color_buffer = new glm::vec4[vertices];
@@ -9,27 +8,15 @@ has_color::has_color(glm::vec4 color, int vertices) {
 		color_buffer[i] = color;
 	}
 }
-void has_color::gen_color_buffer(int vertices) {
-	
+glm::vec4* has_color::get_color_buffer() {
+	return color_buffer;
 };
 
-
-void non_normal::gen_normal_buffer(int vertices, glm::vec3* position_buffer) {};
 has_normal::has_normal(int vertices) {
 	normal_buffer = new glm::vec3[vertices];
 }
-void has_normal::gen_normal_buffer(int vertices, glm::vec3* position) {
-	glm::vec3 u, v, norm;
-
-	for (int i = 0; i < vertices; i += 3) {
-		u = position[i + 2] - position[i];
-		v = position[i + 1] - position[i];
-		norm = glm::normalize(glm::cross(u, v));
-
-		normal_buffer[i] = norm;
-		normal_buffer[i + 1] = norm;
-		normal_buffer[i + 2] = norm;
-	}
+glm::vec3* has_normal::get_normal_buffer() {
+	return normal_buffer;
 };
 
 render_object::render_object(int vertices, color_delegate* color, normal_delegate* normal) {
@@ -38,15 +25,95 @@ render_object::render_object(int vertices, color_delegate* color, normal_delegat
 	this->normal = normal;
 
 }
+glm::vec3* render_object::get_position_buffer() {
+	return position_buffer;
+};
+void render_object::set_shader_program(shader_program* program) {
+	this->program = program;
+};
 void render_object::gen_vertices_buffer() {
+	unsigned int vertex_data_size;
+	GLint vertex_position, vertex_normal, vertex_color;
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), position_buffer, GL_STATIC_DRAW);
 
-}
+	vertex_position = glGetAttribLocation(program->ID, "vPosition");
+	vertex_normal = glGetAttribLocation(program->ID, "vNormal");
+	vertex_color = glGetAttribLocation(program->ID, "vColor");
+
+	vertex_data_size = sizeof(glm::vec3);
+	if (typeid(color) == typeid(has_color) && typeid(normal) == typeid(has_normal)) {
+		vertex_data_size += sizeof(glm::vec4) + sizeof(glm::vec3);
+		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), ((has_color*)(color))->get_color_buffer());
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * (sizeof(glm::vec3) + sizeof(glm::vec4)), total_vertices * sizeof(glm::vec3), ((has_normal*)(normal))->get_normal_buffer());
+
+		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glVertexAttribPointer(vertex_color, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)(total_vertices * sizeof(glm::vec3)));
+		glVertexAttribPointer(vertex_normal, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)(total_vertices * (sizeof(glm::vec3) + sizeof(glm::vec4))));
+
+		glEnableVertexAttribArray(vertex_position);
+		glEnableVertexAttribArray(vertex_color);
+		glEnableVertexAttribArray(vertex_normal);
+	}
+
+	else if (typeid(color) == typeid(has_color)) {
+		vertex_data_size += sizeof(glm::vec4);
+		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), ((has_color*)(color))->get_color_buffer());
+
+		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glVertexAttribPointer(vertex_color, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)(total_vertices * sizeof(glm::vec3)));
+
+		glEnableVertexAttribArray(vertex_position);
+		glEnableVertexAttribArray(vertex_color); 
+		
+	}
+
+	else if (typeid(normal) == typeid(has_normal)) {
+		vertex_data_size += sizeof(glm::vec4);
+		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec3), ((has_normal*)(normal))->get_normal_buffer());
+	
+
+		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glVertexAttribPointer(vertex_normal, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)(total_vertices * sizeof(glm::vec3)));
+
+		glEnableVertexAttribArray(vertex_position);
+		glEnableVertexAttribArray(vertex_normal);
+	}
+
+	else {
+		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, position_buffer, GL_STATIC_DRAW);
+		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+		glEnableVertexAttribArray(vertex_position);
+	}
+};
+void render_object::gen_normal_buffer() {
+	glm::vec3 u, v, norm;
+
+	for (int i = 0; i < total_vertices; i += 3) {
+		u = position_buffer[i + 2] - position_buffer[i];
+		v = position_buffer[i + 1] - position_buffer[i];
+		norm = glm::normalize(glm::cross(u, v));
+
+		((has_normal*)(normal))->normal_buffer[i] = norm;
+		((has_normal*)(normal))->normal_buffer[i + 1] = norm;
+		((has_normal*)(normal))->normal_buffer[i + 2] = norm;
+	}
+};
+void render_object::draw() {
+	glUseProgram(program->ID);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, total_vertices);
+};
 
 shapes::shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements) : render_object(vertices, color, normal){
 	height = measurements[0];
@@ -57,12 +124,8 @@ triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float*
 	this->position = position;
 
 	gen_position_buffer();
-	if(typeid(this->color) == typeid(has_color))
-		((has_color*)(this->color))->gen_color_buffer(3);
-
 	if (has_normals)
-		((has_normal*)(this->normal))->gen_normal_buffer(3, position_buffer);
-	
+		gen_normal_buffer();
 };
 void triangle::gen_position_buffer() {
 	glm::vec3 vertex;

@@ -5,12 +5,10 @@
 #define __RENDER_OBJECT_H__
 #include<typeinfo>
 #include"resource_manager.h"
+#include"shader.h"
 
 /*-----Header for color attribute-----*/
 class color_delegate {
-protected:
-	virtual void gen_color_buffer(int vertices) = 0;
-
 };
 class has_color : public color_delegate {
 protected:
@@ -19,35 +17,37 @@ protected:
 
 public:
 	has_color(glm::vec4 color, int vertices);
-	void gen_color_buffer(int vertices) override;
+	glm::vec4* get_color_buffer();
 };
 class non_color : public color_delegate {
-public:
-	void gen_color_buffer(int vertices) override;
 };
 
 /*-----Header for normal attribute-----*/
 class normal_delegate {
-protected:
-	virtual void gen_normal_buffer(int vertices, glm::vec3* position_buffer) = 0;
 };
 class has_normal : public normal_delegate {
-protected:
+public:
 	glm::vec3* normal_buffer;
 
-public:
 	has_normal(int vertices);
-	void gen_normal_buffer(int vertices, glm::vec3* position_buffer) override;
+	glm::vec3* get_normal_buffer();
 };
 class non_normal : public normal_delegate {
-public:
-	void gen_normal_buffer(int vertices, glm::vec3* position_buffer) override;
 };
 
 /*-----Header for abstract class render_object-----*/
 class render_object {
+public:
+	glm::vec3* get_position_buffer();
+	void set_shader_program(shader_program* program);
+
+	virtual void gen_vertices_buffer();
+	virtual void gen_normal_buffer();
+	virtual void draw();
+
 protected:
 	int total_vertices;
+	shader_program* program;
 	GLuint VBO;
 	GLuint VAO;
 	glm::vec3* position_buffer;
@@ -55,9 +55,6 @@ protected:
 	normal_delegate* normal;
 
 	render_object(int vertices, color_delegate* color, normal_delegate* normal);
-	virtual void gen_vertices_buffer() = 0;
-	
-	virtual void draw() = 0;
 };
 
 /*----- Header for abstract class shape -----*/
