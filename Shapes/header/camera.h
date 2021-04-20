@@ -2,6 +2,8 @@
 #define __CAMERA_H__
 
 #include"resource_manager.h"
+#include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
 
 enum camera_movement {
 	FORWARD,
@@ -25,7 +27,7 @@ public:
 	float speed;
 	float mouse_sensivity;
 
-	camera(glm::vec3 camera_position, glm::vec3 camera_right, glm::vec3 world_up);
+	camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0f));
 
 	void process_keyboard(camera_movement movement, float delta_time);
 	void process_mouse(float x_offset, float y_offest, bool constrain_pitch = true);

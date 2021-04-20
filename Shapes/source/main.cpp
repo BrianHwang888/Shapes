@@ -1,6 +1,8 @@
 #include"../header/resource_manager.h"
 #include"../header/shader.h"
 #include"../header/render_object.h"
+#include"../header/camera.h"
+#include<glm/gtc/type_ptr.hpp>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -43,6 +45,11 @@ int main(void) {
 
 	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
 	shader_program basic_program(shader_paths[0], shader_paths[1]);
+
+	camera main_camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
+	glm::mat4 projection;
+
 	float* right_triangle_measurements = new float[2];
 	right_triangle_measurements[0] = 2.0f;
 	right_triangle_measurements[1] = 2.0f;
