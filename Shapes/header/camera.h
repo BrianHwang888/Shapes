@@ -1,9 +1,14 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
+<<<<<<< HEAD
 #include"resource_manager.h"
+=======
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
+>>>>>>> 392364e8814ba6376eebba2cd6bb156ebb379d83
 
 enum camera_movement {
 	FORWARD,
