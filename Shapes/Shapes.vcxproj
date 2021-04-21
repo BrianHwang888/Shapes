@@ -133,7 +133,6 @@
     <ClCompile Include="source\light.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\render_object.cpp" />
-    <ClCompile Include="source\resource_manager.cpp" />
     <ClCompile Include="source\scene.cpp" />
     <ClCompile Include="source\shader.cpp" />
   </ItemGroup>
@@ -141,7 +140,6 @@
     <ClInclude Include="header\camera.h" />
     <ClInclude Include="header\light.h" />
     <ClInclude Include="header\render_object.h" />
-    <ClInclude Include="header\resource_manager.h" />
     <ClInclude Include="header\scene.h" />
     <ClInclude Include="header\shader.h" />
   </ItemGroup>

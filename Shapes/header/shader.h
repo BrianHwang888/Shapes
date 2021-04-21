@@ -1,7 +1,13 @@
 #ifndef __SHADER_H__
 #define	__SHADER_H__
 
-#include"resource_manager.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<glm/glm.hpp>
+
+const char* read_file(const char* file_path);
 
 class shader_program {
 public:

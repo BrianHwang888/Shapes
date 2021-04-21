@@ -1,7 +1,9 @@
 #ifndef __LIGHT_H__
 #define __LIGHT_H__
 
-#include"resource_manager.h"
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<glm/glm.hpp>
 
 class light {
 protected:

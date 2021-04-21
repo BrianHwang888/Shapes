@@ -1,2 +1,8 @@
-﻿  main.cpp
+﻿  camera.cpp
+  light.cpp
+  main.cpp
+  render_object.cpp
+  scene.cpp
+  shader.cpp
+  Generating Code...
   Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe

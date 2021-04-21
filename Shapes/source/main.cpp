@@ -1,4 +1,8 @@
-#include"../header/resource_manager.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+
 #include"../header/shader.h"
 #include"../header/render_object.h"
 #include"../header/camera.h"

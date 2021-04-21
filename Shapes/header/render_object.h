@@ -4,7 +4,9 @@
 #ifndef __RENDER_OBJECT_H__
 #define __RENDER_OBJECT_H__
 #include<typeinfo>
-#include"resource_manager.h"
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<glm/glm.hpp>
 #include"shader.h"
 
 /*-----Header for color attribute-----*/

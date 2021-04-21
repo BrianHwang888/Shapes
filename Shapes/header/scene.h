@@ -1,7 +1,10 @@
 #ifndef __SCENE_H__
 #define __SCENE_H__
 
-#include"resource_manager.h"
+#include<glad/glad.h>
+#include<GLFW/glfw3.h>
+#include<glm/glm.hpp>
+
 #include"render_object.h"
 #include"light.h"
 
