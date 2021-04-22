@@ -17,6 +17,9 @@ protected:
 
 public:
 	scene(render_object* object, int num_obj, light* light_source, int num_lights);
+	void gen_buffers();
+	void draw_objects();
+
 };
 
 #endif // !__SCENE_H__
