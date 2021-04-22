@@ -8,16 +8,10 @@ has_color::has_color(glm::vec4 color, int vertices) {
 		color_buffer[i] = color;
 	}
 }
-glm::vec4* has_color::get_color_buffer() {
-	return color_buffer;
-};
 
 has_normal::has_normal(int vertices) {
 	normal_buffer = new glm::vec3[vertices];
 }
-glm::vec3* has_normal::get_normal_buffer() {
-	return normal_buffer;
-};
 
 render_object::render_object(int vertices, color_delegate* color, normal_delegate* normal) {
 	total_vertices = vertices;
@@ -46,12 +40,14 @@ void render_object::gen_vertices_buffer() {
 	vertex_color = glGetAttribLocation(program->ID, "vColor");
 
 	vertex_data_size = sizeof(glm::vec3);
-	if (typeid(color) == typeid(has_color) && typeid(normal) == typeid(has_normal)) {
+
+	if (color != nullptr && normal != nullptr) {
+		printf("Color shaded obj\n");
 		vertex_data_size += sizeof(glm::vec4) + sizeof(glm::vec3);
 		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
-		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), ((has_color*)(color))->get_color_buffer());
-		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * (sizeof(glm::vec3) + sizeof(glm::vec4)), total_vertices * sizeof(glm::vec3), ((has_normal*)(normal))->get_normal_buffer());
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), color->color_buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * (sizeof(glm::vec3) + sizeof(glm::vec4)), total_vertices * sizeof(glm::vec3), normal->normal_buffer);
 
 		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 		glVertexAttribPointer(vertex_color, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)(total_vertices * sizeof(glm::vec3)));
@@ -62,11 +58,11 @@ void render_object::gen_vertices_buffer() {
 		glEnableVertexAttribArray(vertex_normal);
 	}
 
-	else if (typeid(color) == typeid(has_color)) {
+	else if (color != nullptr) {
 		vertex_data_size += sizeof(glm::vec4);
 		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
-		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), ((has_color*)(color))->get_color_buffer());
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), color->color_buffer);
 
 		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 		glVertexAttribPointer(vertex_color, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)(total_vertices * sizeof(glm::vec3)));
@@ -76,11 +72,11 @@ void render_object::gen_vertices_buffer() {
 		
 	}
 
-	else if (typeid(normal) == typeid(has_normal)) {
+	else if (normal != nullptr) {
 		vertex_data_size += sizeof(glm::vec4);
 		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
-		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec3), ((has_normal*)(normal))->get_normal_buffer());
+		glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec3), normal->normal_buffer);
 	
 
 		glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);

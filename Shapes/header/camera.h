@@ -25,6 +25,7 @@ public:
 	float yaw;
 	float pitch;
 
+	float zoom = 45.0f;
 	float speed;
 	float mouse_sensivity;
 
@@ -32,6 +33,7 @@ public:
 
 	void process_keyboard(camera_movement movement, float delta_time);
 	void process_mouse(float x_offset, float y_offest, bool constrain_pitch = true);
+	glm::mat4 get_view_matrix();
 
 private:
 	void update_camera_vectors();	

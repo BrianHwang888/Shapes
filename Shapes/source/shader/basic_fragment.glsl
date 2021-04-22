@@ -32,7 +32,7 @@ void main(){
 
 	result = (ambient + diffuse + specular) * color;
 
-	frag_color = vec4(result, 1.0f);
-	
+	frag_color = vec4(result, 1.0f); 
+
 	//frag_color = vec4(norm, 1.0f);
 }

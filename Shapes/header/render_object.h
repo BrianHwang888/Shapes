@@ -3,7 +3,6 @@
 
 #ifndef __RENDER_OBJECT_H__
 #define __RENDER_OBJECT_H__
-#include<typeinfo>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include<glm/glm.hpp>
@@ -11,28 +10,27 @@
 
 /*-----Header for color attribute-----*/
 class color_delegate {
+public:
+	glm::vec4* color_buffer;
 };
 class has_color : public color_delegate {
 protected:
 	glm::vec4 color;
-	glm::vec4* color_buffer;
 
 public:
 	has_color(glm::vec4 color, int vertices);
-	glm::vec4* get_color_buffer();
 };
 class non_color : public color_delegate {
 };
 
 /*-----Header for normal attribute-----*/
 class normal_delegate {
+public:
+	glm::vec3* normal_buffer;
 };
 class has_normal : public normal_delegate {
 public:
-	glm::vec3* normal_buffer;
-
 	has_normal(int vertices);
-	glm::vec3* get_normal_buffer();
 };
 class non_normal : public normal_delegate {
 };

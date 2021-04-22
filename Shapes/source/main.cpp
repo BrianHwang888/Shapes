@@ -51,21 +51,25 @@ int main(void) {
 	shader_program basic_program(shader_paths[0], shader_paths[1]);
 
 	camera main_camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+	glm::mat4 model;
 
-	glm::mat4 projection;
+	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 
 	float* right_triangle_measurements = new float[2];
-	right_triangle_measurements[0] = 2.0f;
-	right_triangle_measurements[1] = 2.0f;
-
-	triangle right_triangle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
+	right_triangle_measurements[0] = 10.0f;
+	right_triangle_measurements[1] = 10.0f;
+	triangle right_triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
 	right_triangle.set_shader_program(&basic_program);
-
 	right_triangle.gen_vertices_buffer();
 	
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+
+		basic_program.set_mat4("projection", projection);
+		basic_program.set_mat4("view", main_camera.get_view_matrix());
+		basic_program.set_mat4("model", model);
 
 		right_triangle.draw();
 

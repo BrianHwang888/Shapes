@@ -52,3 +52,6 @@ void camera::update_camera_vectors() {
 	right = glm::normalize(glm::cross(front, world_up));
 	up = glm::normalize(glm::cross(right, front));	
 };
+glm::mat4 camera::get_view_matrix() {
+	return glm::lookAt(position, position + front, up);
+}
