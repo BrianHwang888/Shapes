@@ -15,13 +15,15 @@ void init_window(int option);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_input_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
 void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos);
+void process_input(GLFWwindow* window);
 
-float delta_time = 0.0f;
-float last_frame = 0.0f;
-
+camera main_camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 double last_x = WINDOW_WIDTH / 2.0f;
 double last_y = WINDOW_HEIGHT / 2.0f;
 bool first_mouse = true;
+
+float delta_time = 0.0f;
+float last_frame = 0.0f;
 
 int main(void) {
 	glfwInit();
@@ -50,9 +52,19 @@ int main(void) {
 	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
 	shader_program basic_program(shader_paths[0], shader_paths[1]);
 
-	camera main_camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+	
 	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 model;
+	int shiny = 32;
+	float ambient = 0.1f;
+	float spec = 0.05f;
+
+	basic_program.set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
+	basic_program.set_vec3("light_pos", glm::vec3(0.0f, 2.0f, 0.0f));
+	basic_program.set_vec3("viewer_pos", main_camera.position);
+	basic_program.set_int("shininess", shiny);
+	basic_program.set_float("ambient_stren", ambient);
+	basic_program.set_float("spec", spec);
 
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 
@@ -63,9 +75,17 @@ int main(void) {
 	right_triangle.set_shader_program(&basic_program);
 	right_triangle.gen_vertices_buffer();
 	
+	float current_frame;
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
+
+		current_frame = glfwGetTime();
+
+		delta_time = current_frame - last_frame;
+		last_frame = current_frame;
+
+		process_input(window); 
 
 		basic_program.set_mat4("projection", projection);
 		basic_program.set_mat4("view", main_camera.get_view_matrix());
@@ -93,6 +113,18 @@ void keyboard_input_callback(GLFWwindow* window, int key, int scancode, int acti
 	GLfloat current_time = (GLfloat)glfwGetTime();
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+}
+void process_input(GLFWwindow* window) {
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		main_camera.process_keyboard(FORWARD, delta_time);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		main_camera.process_keyboard(LEFT, delta_time);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		main_camera.process_keyboard(BACKWARD, delta_time);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		main_camera.process_keyboard(RIGHT, delta_time);
 }
 void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos) {
 	if (first_mouse) {
@@ -100,4 +132,12 @@ void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos) {
 		last_y = y_pos;
 		first_mouse = false;
 	}
+
+	double x_diff = x_pos - last_x;
+	double y_diff = last_y - y_pos;
+
+	last_x = x_pos;
+	last_y = y_pos;
+
+	main_camera.process_mouse(x_diff, y_diff);
 }

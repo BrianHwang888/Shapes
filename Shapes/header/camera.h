@@ -6,12 +6,20 @@
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 
+#include<stdio.h>
+
 enum camera_movement {
 	FORWARD,
 	BACKWARD,
 	RIGHT,
 	LEFT
 };
+
+const float YAW = -90.0f;
+const float PITCH = 0.0f;
+const float SPEED = 2.5f;
+const float SENSITIVITY = 0.1f;
+const float ZOOM = 45.0f;
 
 /*----- CAMERA CLASS -----*/
 class camera{
@@ -29,7 +37,7 @@ public:
 	float speed;
 	float mouse_sensivity;
 
-	camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0f));
+	camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 world_up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 
 	void process_keyboard(camera_movement movement, float delta_time);
 	void process_mouse(float x_offset, float y_offest, bool constrain_pitch = true);

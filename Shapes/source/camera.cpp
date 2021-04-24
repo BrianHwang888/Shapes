@@ -1,6 +1,6 @@
 #include"../header/camera.h"
 
-camera::camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 world_up) {
+camera::camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 world_up, float yaw, float pitch) : speed(SPEED), mouse_sensivity(SENSITIVITY), zoom(ZOOM) {
 	position = camera_position;
 	front = camera_front;
 	this->world_up = world_up;
@@ -8,8 +8,8 @@ camera::camera(glm::vec3 camera_position, glm::vec3 camera_front, glm::vec3 worl
 	update_camera_vectors();
 };
 void camera::process_keyboard(camera_movement movement, float delta_time) {
-	float velocity = speed * delta_time;
-	
+	float velocity = speed * delta_time;  
+
 	switch (movement)
 	{
 	case FORWARD:
@@ -25,6 +25,8 @@ void camera::process_keyboard(camera_movement movement, float delta_time) {
 		position -= right * velocity;
 		break;
 	}
+	
+	printf("Camera position: %f, %f, %f\n", position.x, position.y, position.z);
 };
 void camera::process_mouse(float x_offest, float y_offset, bool constrain_pitch) {
 	yaw += x_offest * mouse_sensivity;
