@@ -1,4 +1,3 @@
 # Shapes
-Need to add lighting
-
-Fixing camera class
+Things to do:
+	- fixing lighting issue
