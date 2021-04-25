@@ -26,7 +26,6 @@ void camera::process_keyboard(camera_movement movement, float delta_time) {
 		break;
 	}
 	
-	printf("Camera position: %f, %f, %f\n", position.x, position.y, position.z);
 };
 void camera::process_mouse(float x_offest, float y_offset, bool constrain_pitch) {
 	yaw += x_offest * mouse_sensivity;
