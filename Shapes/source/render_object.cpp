@@ -42,7 +42,6 @@ void render_object::gen_vertices_buffer() {
 	vertex_data_size = sizeof(glm::vec3);
 
 	if (color != nullptr && normal != nullptr) {
-		printf("Color shaded obj\n");
 		vertex_data_size += sizeof(glm::vec4) + sizeof(glm::vec3);
 		glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
@@ -56,6 +55,7 @@ void render_object::gen_vertices_buffer() {
 		glEnableVertexAttribArray(vertex_position);
 		glEnableVertexAttribArray(vertex_color);
 		glEnableVertexAttribArray(vertex_normal);
+		 
 	}
 
 	else if (color != nullptr) {
@@ -100,9 +100,9 @@ void render_object::gen_normal_buffer() {
 		v = position_buffer[i + 1] - position_buffer[i];
 		norm = glm::normalize(glm::cross(u, v));
 
-		((has_normal*)(normal))->normal_buffer[i] = norm;
-		((has_normal*)(normal))->normal_buffer[i + 1] = norm;
-		((has_normal*)(normal))->normal_buffer[i + 2] = norm;
+		normal->normal_buffer[i] = norm;
+		normal->normal_buffer[i + 1] = norm;
+		normal->normal_buffer[i + 2] = norm;
 	}
 };
 void render_object::draw() {

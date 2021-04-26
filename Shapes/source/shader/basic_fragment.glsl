@@ -31,8 +31,7 @@ void main(){
 	vec3 specular = specular_stren * spec * light_color;
 
 	result = (ambient + diffuse + specular) * color;
-
+	 
 	frag_color = vec4(result, 1.0f);  
-
-	//frag_color = vec4(norm, 1.0f);
+	//frag_color = vec4(normal, 1.0f);
 }

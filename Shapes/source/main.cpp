@@ -51,20 +51,13 @@ int main(void) {
 
 	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
 	shader_program basic_program(shader_paths[0], shader_paths[1]);
-
 	
 	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 model;
-	int shiny = 32;
 	float ambient = 0.1f;
-	float spec = 0.05f;
-
-	basic_program.set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
-	basic_program.set_vec3("light_pos", glm::vec3(0.0f, 2.0f, 0.0f));
-	basic_program.set_vec3("viewer_pos", main_camera.position);
-	basic_program.set_int("shininess", shiny);
-	basic_program.set_float("ambient_stren", ambient);
-	basic_program.set_float("spec", spec);
+	float spec = 0.5f;
+	int shiny = 32;
+	
 
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 
@@ -86,13 +79,19 @@ int main(void) {
 		last_frame = current_frame;
 
 		process_input(window); 
+		basic_program.set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
+		basic_program.set_vec3("light_pos", glm::vec3(0.0f, 0.0f, 2.0f));
+		basic_program.set_float("ambient_stren", ambient);
+		basic_program.set_float("specular_stren", spec);
+		basic_program.set_int("shininess", shiny);
 
+		basic_program.set_vec3("viewer_pos", main_camera.position);
 		basic_program.set_mat4("projection", projection);
 		basic_program.set_mat4("view", main_camera.get_view_matrix());
 		basic_program.set_mat4("model", model);
 
 		right_triangle.draw();
-
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
