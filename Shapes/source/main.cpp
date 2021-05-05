@@ -6,6 +6,7 @@
 #include"../header/shader.h"
 #include"../header/render_object.h"
 #include"../header/camera.h"
+#include"../header/light.h"
 #include<glm/gtc/type_ptr.hpp>
 
 #define WINDOW_WIDTH 800
@@ -54,8 +55,8 @@ int main(void) {
 	
 	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 model;
-	float ambient = 0.1f;
-	float spec = 0.5f;
+	light main_light(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f);
+
 	int shiny = 32;
 	
 
@@ -79,16 +80,16 @@ int main(void) {
 		last_frame = current_frame;
 
 		process_input(window); 
-		basic_program.set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
-		basic_program.set_vec3("light_pos", glm::vec3(0.0f, 0.0f, 2.0f));
-		basic_program.set_float("ambient_stren", ambient);
-		basic_program.set_float("specular_stren", spec);
+		basic_program.set_vec3("light_color", main_light.color);
+		basic_program.set_vec3("light_pos", main_light.position);
+		basic_program.set_float("ambient_stren", main_light.ambient_str);
+		basic_program.set_float("specular_stren", main_light.specular_str);
 		basic_program.set_int("shininess", shiny);
 
 		basic_program.set_vec3("viewer_pos", main_camera.position);
 		basic_program.set_mat4("projection", projection);
 		basic_program.set_mat4("view", main_camera.get_view_matrix());
-		basic_program.set_mat4("model", model);
+		basic_program.set_mat4("model", right_triangle.model);
 
 		right_triangle.draw();
 		

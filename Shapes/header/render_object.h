@@ -38,6 +38,8 @@ class non_normal : public normal_delegate {
 /*-----Header for abstract class render_object-----*/
 class render_object {
 public:
+	glm::mat4 model;
+
 	glm::vec3* get_position_buffer();
 	void set_shader_program(shader_program* program);
 
@@ -52,7 +54,7 @@ protected:
 	GLuint VAO;
 	glm::vec3* position_buffer;
 	color_delegate* color;
-	normal_delegate* normal;
+	normal_delegate* normal; 
 
 	render_object(int vertices, color_delegate* color, normal_delegate* normal);
 };

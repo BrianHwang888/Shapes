@@ -8,7 +8,7 @@ light::light() {
 	specular_str = 0.5f;
 };
 
-light::light(glm::vec3 position, glm::vec4 color, float ambient_val, float specular_val) {
+light::light(glm::vec3 position, glm::vec3 color, float ambient_val, float specular_val) {
 	this->position = position;
 	this->color = color;
 	ambient_str = ambient_val;
