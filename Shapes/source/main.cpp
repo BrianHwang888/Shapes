@@ -26,6 +26,14 @@ bool first_mouse = true;
 float delta_time = 0.0f;
 float last_frame = 0.0f;
 
+shader_program* basic_program;
+bool draw_tri = false;
+
+struct shape_node {
+	shapes* object;
+	shape_node* next;
+};
+
 int main(void) {
 	glfwInit();
 	printf("OpenGL version supported %s\n", glfwGetVersionString());
@@ -51,7 +59,7 @@ int main(void) {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	const char* shader_paths[2] = { "source/shader/basic_vertex.glsl", "source/shader/basic_fragment.glsl" };
-	shader_program basic_program(shader_paths[0], shader_paths[1]);
+	basic_program = new shader_program(shader_paths[0], shader_paths[1]);
 	
 	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
 	glm::mat4 model;
@@ -59,17 +67,17 @@ int main(void) {
 
 	int shiny = 32;
 	
-
-	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
-
-	float* right_triangle_measurements = new float[2];
+	float right_triangle_measurements[2];
 	right_triangle_measurements[0] = 10.0f;
 	right_triangle_measurements[1] = 10.0f;
-	triangle right_triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
-	right_triangle.set_shader_program(&basic_program);
-	right_triangle.gen_vertices_buffer();
-	
+
+	shape_node triangles;
+	triangles.object = new triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
+	triangles.object->set_shader_program(basic_program);
+	triangles.object->gen_vertices_buffer();
+
 	float current_frame;
+	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
@@ -80,19 +88,19 @@ int main(void) {
 		last_frame = current_frame;
 
 		process_input(window); 
-		basic_program.set_vec3("light_color", main_light.color);
-		basic_program.set_vec3("light_pos", main_light.position);
-		basic_program.set_float("ambient_stren", main_light.ambient_str);
-		basic_program.set_float("specular_stren", main_light.specular_str);
-		basic_program.set_int("shininess", shiny);
+		basic_program->set_vec3("light_color", main_light.color);
+		basic_program->set_vec3("light_pos", main_light.position);
+		basic_program->set_float("ambient_stren", main_light.ambient_str);
+		basic_program->set_float("specular_stren", main_light.specular_str);
+		basic_program->set_int("shininess", shiny);
 
-		basic_program.set_vec3("viewer_pos", main_camera.position);
-		basic_program.set_mat4("projection", projection);
-		basic_program.set_mat4("view", main_camera.get_view_matrix());
-		basic_program.set_mat4("model", right_triangle.model);
+		basic_program->set_vec3("viewer_pos", main_camera.position);
+		basic_program->set_mat4("projection", projection);
+		basic_program->set_mat4("view", main_camera.get_view_matrix());
+		basic_program->set_mat4("model", triangles.object->model);
 
-		right_triangle.draw();
-		
+		triangles.object->draw();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -125,6 +133,14 @@ void process_input(GLFWwindow* window) {
 		main_camera.process_keyboard(BACKWARD, delta_time);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		main_camera.process_keyboard(RIGHT, delta_time);
+
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+		float measurement[2];
+		measurement[0] = 2.0f;
+		measurement[1] = 2.0f;
+		glm::vec3 position(main_camera.position.x + 5.0f, main_camera.position.y, main_camera.position.z);
+		draw_tri = true;
+	}
 }
 void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos) {
 	if (first_mouse) {
