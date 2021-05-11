@@ -1,3 +1,5 @@
 # Shapes
 Things to do:
-	- fixing lighting issue
+	- fix orentation of spawned triangles
+		- apply camera transfomation matrix
+		- edit for rotation of triangle

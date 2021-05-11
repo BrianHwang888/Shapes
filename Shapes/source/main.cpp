@@ -12,6 +12,11 @@
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
+struct shape_node {
+	shapes* object;
+	shape_node* next;
+};
+
 void init_window(int option);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_input_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
@@ -27,12 +32,8 @@ float delta_time = 0.0f;
 float last_frame = 0.0f;
 
 shader_program* basic_program;
-bool draw_tri = false;
-
-struct shape_node {
-	shapes* object;
-	shape_node* next;
-};
+shape_node shape_linked_list; 
+shape_node* shape_tail = &shape_linked_list;
 
 int main(void) {
 	glfwInit();
@@ -71,22 +72,22 @@ int main(void) {
 	right_triangle_measurements[0] = 10.0f;
 	right_triangle_measurements[1] = 10.0f;
 
-	shape_node triangles;
-	triangles.object = new triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
-	triangles.object->set_shader_program(basic_program);
-	triangles.object->gen_vertices_buffer();
+	shape_linked_list.object = new triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
+	shape_linked_list.object->set_shader_program(basic_program);
+	shape_linked_list.object->gen_vertices_buffer();
 
 	float current_frame;
+	shape_node* current_node;
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 
 		current_frame = glfwGetTime();
-
 		delta_time = current_frame - last_frame;
 		last_frame = current_frame;
 
+		current_node = &shape_linked_list;
 		process_input(window); 
 		basic_program->set_vec3("light_color", main_light.color);
 		basic_program->set_vec3("light_pos", main_light.position);
@@ -97,9 +98,12 @@ int main(void) {
 		basic_program->set_vec3("viewer_pos", main_camera.position);
 		basic_program->set_mat4("projection", projection);
 		basic_program->set_mat4("view", main_camera.get_view_matrix());
-		basic_program->set_mat4("model", triangles.object->model);
+		basic_program->set_mat4("model", shape_linked_list.object->model);
 
-		triangles.object->draw();
+		while(current_node != NULL) {
+			current_node->object->draw();
+			current_node = current_node->next;
+		} 
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -139,7 +143,14 @@ void process_input(GLFWwindow* window) {
 		measurement[0] = 2.0f;
 		measurement[1] = 2.0f;
 		glm::vec3 position(main_camera.position.x + 5.0f, main_camera.position.y, main_camera.position.z);
-		draw_tri = true;
+		
+		shape_tail->next = new shape_node;
+		shape_tail->next->object = new triangle(position, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, measurement);
+		shape_tail->next->object->set_shader_program(basic_program);
+		shape_tail->next->object->gen_vertices_buffer();
+		shape_tail->next->next = NULL;
+		shape_tail = shape_tail->next;
+
 	}
 }
 void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos) {

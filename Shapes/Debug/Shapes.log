@@ -1,4 +1,4 @@
 ﻿  main.cpp
-c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(85): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(158): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(86): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(169): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe
