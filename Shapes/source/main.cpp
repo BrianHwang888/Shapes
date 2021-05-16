@@ -13,8 +13,8 @@
 #define WINDOW_HEIGHT 600
 
 struct shape_node {
-	shapes* object;
-	shape_node* next;
+	shapes* object = NULL;
+	shape_node* next = NULL;
 };
 
 void init_window(int option);
@@ -63,7 +63,6 @@ int main(void) {
 	basic_program = new shader_program(shader_paths[0], shader_paths[1]);
 	
 	glm::mat4 projection = glm::perspective(glm::radians(main_camera.zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
-	glm::mat4 model;
 	light main_light(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.1f, 0.5f);
 
 	int shiny = 32;
@@ -98,9 +97,9 @@ int main(void) {
 		basic_program->set_vec3("viewer_pos", main_camera.position);
 		basic_program->set_mat4("projection", projection);
 		basic_program->set_mat4("view", main_camera.get_view_matrix());
-		basic_program->set_mat4("model", shape_linked_list.object->model);
 
 		while(current_node != NULL) {
+			basic_program->set_mat4("model", current_node->object->model);
 			current_node->object->draw();
 			current_node = current_node->next;
 		} 
@@ -142,13 +141,13 @@ void process_input(GLFWwindow* window) {
 		float measurement[2];
 		measurement[0] = 2.0f;
 		measurement[1] = 2.0f;
-		glm::vec3 position(main_camera.position.x + 5.0f, main_camera.position.y, main_camera.position.z);
+		glm::vec3 position(main_camera.position.x, main_camera.position.y, main_camera.position.z);
 		
 		shape_tail->next = new shape_node;
 		shape_tail->next->object = new triangle(position, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, measurement);
 		shape_tail->next->object->set_shader_program(basic_program);
 		shape_tail->next->object->gen_vertices_buffer();
-		shape_tail->next->next = NULL;
+		shape_tail->next->object->model = glm::translate(shape_tail->next->object->model, glm::vec3(glm::normalize(main_camera.front) * 5.0f));
 		shape_tail = shape_tail->next;
 
 	}

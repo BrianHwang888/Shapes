@@ -1,5 +1,6 @@
 # Shapes
+Pressing T will spawn a right triangle in front of the camera
+
 Things to do:
 	- fix orentation of spawned triangles
-		- apply camera transfomation matrix
-		- edit for rotation of triangle
+		- edit rotation of triangle 
