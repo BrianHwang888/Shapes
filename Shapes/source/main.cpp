@@ -141,13 +141,20 @@ void process_input(GLFWwindow* window) {
 		float measurement[2];
 		measurement[0] = 2.0f;
 		measurement[1] = 2.0f;
+
 		glm::vec3 position(main_camera.position.x, main_camera.position.y, main_camera.position.z);
+		position = position + glm::vec3(glm::normalize(main_camera.front) * 5.0f);
+		float y_angle = glm::radians(main_camera.pitch);
+		float x_angle = glm::radians(main_camera.yaw);
 		
 		shape_tail->next = new shape_node;
-		shape_tail->next->object = new triangle(position, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, measurement);
+		shape_tail->next->object = new triangle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, measurement);
 		shape_tail->next->object->set_shader_program(basic_program);
 		shape_tail->next->object->gen_vertices_buffer();
-		shape_tail->next->object->model = glm::translate(shape_tail->next->object->model, glm::vec3(glm::normalize(main_camera.front) * 5.0f));
+		shape_tail->next->object->model = glm::translate(shape_tail->next->object->model, position);
+		shape_tail->next->object->model = glm::rotate(shape_tail->next->object->model, y_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		shape_tail->next->object->model = glm::rotate(shape_tail->next->object->model, x_angle, glm::vec3(0.0f, 1.0f, 0.0f));
+		
 		shape_tail = shape_tail->next;
 
 	}

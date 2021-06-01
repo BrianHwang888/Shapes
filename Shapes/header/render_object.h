@@ -49,6 +49,7 @@ public:
 
 protected:
 	int total_vertices;
+	glm::vec3 position;
 	shader_program* program;
 	GLuint VBO;
 	GLuint VAO;
@@ -56,26 +57,44 @@ protected:
 	color_delegate* color;
 	normal_delegate* normal; 
 
-	render_object(int vertices, color_delegate* color, normal_delegate* normal);
+	render_object();
+	render_object(int vertices, color_delegate* color, normal_delegate* normal, glm::vec3 pos);
+	virtual void gen_position_buffer() = 0;
+};
+
+/*----- Header for class line -----*/
+class line : public render_object {
+protected:
+	float length;
+
+public:
+	line();
+	line(glm::vec4 color, float len);
+
+private:
+	void gen_position_buffer() override;
 };
 
 /*----- Header for abstract class shape -----*/
-class shapes :public render_object {
+class shapes : public render_object {
 protected:
 	float height;
 	float base;
-	shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements);
+
+	shapes();
+	shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements, glm::vec3 position);
+
+private:
+	void gen_position_buffer() override;
 };
 
 /*----- Header for triangle class -----*/
 class triangle :public shapes {
 public:
+	triangle();
 	triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements); //creates a right triangle by default
 
 private:
-	void gen_position_buffer();
-
-protected:
-	glm::vec3 position;
+	void gen_position_buffer() override;
 };
 #endif

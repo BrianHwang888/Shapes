@@ -13,7 +13,17 @@ has_normal::has_normal(int vertices) {
 	normal_buffer = new glm::vec3[vertices];
 }
 
-render_object::render_object(int vertices, color_delegate* color, normal_delegate* normal) {
+render_object::render_object() {
+	total_vertices = 0;
+	program = NULL;
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	position_buffer = NULL;
+	color = NULL;
+	normal = NULL;
+	model = glm::mat4(1.0f);
+};
+render_object::render_object(int vertices, color_delegate* color, normal_delegate* normal, glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f)) {
+	position = pos;
 	total_vertices = vertices;
 	this->color = color;
 	this->normal = normal;
@@ -111,14 +121,32 @@ void render_object::draw() {
 	glDrawArrays(GL_TRIANGLES, 0, total_vertices);
 };
 
-shapes::shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements) : render_object(vertices, color, normal){
+line::line() {
+	length = 1.0f;
+};
+line::line(glm::vec4 color, float len) : render_object(2, new has_color(color, 2), new non_normal){
+	length = len;
+
+};
+void line::gen_position_buffer() {
+	
+};
+
+shapes::shapes() : render_object() {
+	height = 0;
+	base = 0;
+
+};
+shapes::shapes(int vertices, color_delegate* color, normal_delegate* normal, float* measurements, glm::vec3 position) : render_object(vertices, color, normal, position){
 	height = measurements[0];
 	base = measurements[1];
 };
+void shapes::gen_position_buffer() {}; //empty 
 
-triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements) : shapes(3, new has_color(color, 3), new has_normal(3), measurements) {
-	this->position = position;
-
+triangle::triangle() : shapes(){
+	
+};
+triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements) : shapes(3, new has_color(color, 3), new has_normal(3), measurements, position) {
 	gen_position_buffer();
 	if (has_normals)
 		gen_normal_buffer();
