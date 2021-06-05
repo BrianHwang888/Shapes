@@ -8,6 +8,13 @@ has_color::has_color(glm::vec4 color, int vertices) {
 		color_buffer[i] = color;
 	}
 }
+has_multi_color::has_multi_color(glm::vec4* colors, int num_colors, int vertices) {
+	this->colors = new glm::vec4[num_colors];
+	color_buffer = new glm::vec4[vertices];
+
+	for (int i = 0; i < num_colors; i++)
+		this->colors[i] = colors[i];
+};
 
 has_normal::has_normal(int vertices) {
 	normal_buffer = new glm::vec3[vertices];
@@ -130,6 +137,41 @@ line::line(glm::vec4 color, float len) : render_object(2, new has_color(color, 2
 };
 void line::gen_position_buffer() {
 	
+};
+
+grid::grid() : render_object() {
+	length = 0;
+	depth = 0;
+	height = 0;
+};
+grid::grid(glm::vec3 position, glm::vec4* colors, float len, float dep, float hei) : render_object(3, new has_multi_color(colors, 3, 6), new non_normal(), position){
+	int color_index = 0;
+	length = len;
+	depth = dep;
+	height = hei;
+	for (int i = 0; i < 6; i += 2) {
+		color->color_buffer[i] = colors[color_index];
+		color->color_buffer[i + 1] = colors[color_index];
+		color_index++;
+	}
+};
+void grid::gen_position_buffer() {
+	glm::vec3 vertex;
+	position_buffer = new glm::vec3[total_vertices];
+
+	for (int i = 0; i < total_vertices; i += 2)
+		position_buffer[i] = position;
+
+	vertex.x = position.x + length;
+	position_buffer[1] = vertex;
+
+	vertex.x = position.x;
+	vertex.y = position.y + height;
+	position_buffer[3] = vertex;
+	
+	vertex.y = position.y;
+	vertex.z = position.z - depth;
+	position_buffer[5] = vertex;
 };
 
 shapes::shapes() : render_object() {

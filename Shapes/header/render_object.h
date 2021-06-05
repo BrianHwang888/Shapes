@@ -20,6 +20,13 @@ protected:
 public:
 	has_color(glm::vec4 color, int vertices);
 };
+class has_multi_color : public color_delegate {
+protected:
+	glm::vec4* colors;
+
+public:
+	has_multi_color(glm::vec4* colors, int num_colors, int vertices);
+};
 class non_color : public color_delegate {
 };
 
@@ -73,6 +80,19 @@ public:
 
 private:
 	void gen_position_buffer() override;
+};
+
+/*----- Header for class grid -----*/
+class grid : public render_object {
+	public:
+		grid();
+		grid(glm::vec3 position, glm::vec4* colors, float len, float dep, float hei);
+		void gen_position_buffer() override;
+
+	private:
+		float length;
+		float depth;
+		float height;
 };
 
 /*----- Header for abstract class shape -----*/
