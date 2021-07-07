@@ -22,6 +22,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void keyboard_input_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
 void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos);
 void process_input(GLFWwindow* window);
+void save_file();
+void create_file();
 
 camera main_camera(glm::vec3(0.0f, 0.0f, 4.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 double last_x = WINDOW_WIDTH / 2.0f;
@@ -75,6 +77,17 @@ int main(void) {
 	shape_linked_list.object->set_shader_program(basic_program);
 	shape_linked_list.object->gen_vertices_buffer();
 
+	glm::vec4 grid_colors[3];
+	grid_colors[0] = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+	grid_colors[1] = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+	grid_colors[2] = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	int non_shaded = 1;
+	int shaded = 0;
+	grid object_orentation(glm::vec3(0.0f, 0.0f, 0.0f), grid_colors, 5, 5, 5);
+	object_orentation.set_shader_program(basic_program);
+	object_orentation.gen_vertices_buffer();
+
 	float current_frame;
 	shape_node* current_node;
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
@@ -99,14 +112,18 @@ int main(void) {
 		basic_program->set_mat4("view", main_camera.get_view_matrix());
 
 		while(current_node != NULL) {
+			basic_program->set_int("is_non_shaded", shaded);
 			basic_program->set_mat4("model", current_node->object->model);
 			current_node->object->draw();
 			current_node = current_node->next;
 		} 
-
+		basic_program->set_int("is_non_shaded", non_shaded);
+		object_orentation.draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+	save_file();
 
 	glfwTerminate();
 	return 0;
@@ -173,4 +190,60 @@ void mouse_input_callback(GLFWwindow* window, double x_pos, double y_pos) {
 	last_y = y_pos;
 
 	main_camera.process_mouse(x_diff, y_diff);
+}
+void save_file() {
+	FILE* save_file;
+	char filename[81];
+	char decision = '\0';
+
+
+	printf("Do you want to save? (y/n)\n");
+	scanf_s("%c", &decision, 1);
+	if ((int)decision >= 97)
+		decision = decision - 32;
+	while (decision != 'Y' && decision != 'N') {
+		printf("\nPlease enter a vaild choice\n");
+		scanf_s("%c", &decision, 1);
+		if ((int)decision >= 97)
+			decision = decision - 32;
+	}
+	
+	if (decision == 'N') //exits program without saving
+		return;
+
+	printf("Enter the name of file: ");
+	scanf_s("%s", &filename, 80);
+
+	fopen_s(&save_file, filename, "r");
+
+	if (save_file != NULL) {
+		while (decision != 'Y' && decision != 'N') {
+			printf("Do you want to overwrite the file? (y/n)");
+			scanf_s(" %c", &decision, 1);
+
+			if ((int)decision >= 97) {
+				decision = decision - 32;
+			}
+			if (decision != 'Y' && decision != 'N')
+				printf("Please enter a valid choice\n");
+		}
+	}
+
+	if (save_file == NULL || decision == 'Y') {
+		glm::vec3 shape_pos;
+		shape_node* shape_ptr;
+
+		fopen_s(&save_file, filename, "w");
+		shape_ptr = &shape_linked_list;
+		while (shape_ptr != NULL) {
+			shape_pos = shape_ptr->object->get_position();
+			fprintf_s(save_file, "%f %f %f\n", shape_pos.x, shape_pos.y, shape_pos.z);
+			shape_ptr = shape_ptr->next;
+		}
+	}
+
+	fclose(save_file);
+}
+void create_file() {
+
 }

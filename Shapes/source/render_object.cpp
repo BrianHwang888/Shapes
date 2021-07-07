@@ -8,13 +8,7 @@ has_color::has_color(glm::vec4 color, int vertices) {
 		color_buffer[i] = color;
 	}
 }
-has_multi_color::has_multi_color(glm::vec4* colors, int num_colors, int vertices) {
-	this->colors = new glm::vec4[num_colors];
-	color_buffer = new glm::vec4[vertices];
-
-	for (int i = 0; i < num_colors; i++)
-		this->colors[i] = colors[i];
-};
+glm::vec4 has_color::get_color() { return color; };
 
 has_normal::has_normal(int vertices) {
 	normal_buffer = new glm::vec3[vertices];
@@ -39,6 +33,7 @@ render_object::render_object(int vertices, color_delegate* color, normal_delegat
 glm::vec3* render_object::get_position_buffer() {
 	return position_buffer;
 };
+glm::vec3 render_object::get_position() { return position; }
 void render_object::set_shader_program(shader_program* program) {
 	this->program = program;
 };
@@ -131,48 +126,90 @@ void render_object::draw() {
 line::line() {
 	length = 1.0f;
 };
-line::line(glm::vec4 color, float len) : render_object(2, new has_color(color, 2), new non_normal){
-	length = len;
+line::line(float len, int orent, glm::vec4 color, glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f)) : render_object(2, new has_color(color, 2), new non_normal, pos){
+	glm::vec3 end_point;
 
+	length = len;
+	gen_position_buffer();
+	
+	end_point = position;
+
+	if (!(orent ^ 0))
+		end_point.x += length;
+
+	else if (!(orent ^ 1))
+		end_point.y += length;
+
+	else if (!(orent ^ 2))
+		end_point.z -= length;
+
+	position_buffer[0] = position;
+	position_buffer[1] = end_point;
 };
 void line::gen_position_buffer() {
-	
-};
+	position_buffer = new glm::vec3[total_vertices];
 
-grid::grid() : render_object() {
+};
+void line::gen_vertices_buffer() {
+	GLint vertex_position, vertex_color;
+	unsigned int vertex_data_size = sizeof(glm::vec3) + sizeof(glm::vec4);
+	
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	vertex_position = glGetAttribLocation(program->ID, "vPosition");
+	vertex_color = glGetAttribLocation(program->ID, "vColor");
+
+	glBufferData(GL_ARRAY_BUFFER, total_vertices * vertex_data_size, NULL, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, total_vertices * sizeof(glm::vec3), position_buffer);
+	glBufferSubData(GL_ARRAY_BUFFER, total_vertices * sizeof(glm::vec3), total_vertices * sizeof(glm::vec4), color->color_buffer);
+
+	glVertexAttribPointer(vertex_position, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+	glVertexAttribPointer(vertex_color, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)(total_vertices * sizeof(glm::vec3)));
+
+	glEnableVertexAttribArray(vertex_position);
+	glEnableVertexAttribArray(vertex_color);
+}
+void line::draw() {
+	//glUseProgram(program->ID);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_LINE, 0, total_vertices);
+}
+
+grid::grid() {
 	length = 0;
 	depth = 0;
 	height = 0;
 };
-grid::grid(glm::vec3 position, glm::vec4* colors, float len, float dep, float hei) : render_object(3, new has_multi_color(colors, 3, 6), new non_normal(), position){
-	int color_index = 0;
+grid::grid(glm::vec3 position, glm::vec4* colors, float len, float dep, float hei){
+	x_axis = new line(len, 0, colors[0]);
+	y_axis = new line(hei, 1, colors[1]);
+	z_axis = new line(dep, 2, colors[2]);
+
 	length = len;
 	depth = dep;
 	height = hei;
-	for (int i = 0; i < 6; i += 2) {
-		color->color_buffer[i] = colors[color_index];
-		color->color_buffer[i + 1] = colors[color_index];
-		color_index++;
-	}
-};
-void grid::gen_position_buffer() {
-	glm::vec3 vertex;
-	position_buffer = new glm::vec3[total_vertices];
 
-	for (int i = 0; i < total_vertices; i += 2)
-		position_buffer[i] = position;
-
-	vertex.x = position.x + length;
-	position_buffer[1] = vertex;
-
-	vertex.x = position.x;
-	vertex.y = position.y + height;
-	position_buffer[3] = vertex;
 	
-	vertex.y = position.y;
-	vertex.z = position.z - depth;
-	position_buffer[5] = vertex;
 };
+void grid::gen_vertices_buffer() {
+	x_axis->gen_vertices_buffer();
+	y_axis->gen_vertices_buffer();
+	z_axis->gen_vertices_buffer();
+}
+void grid::set_shader_program(shader_program* program) {
+	x_axis->set_shader_program(program);
+	y_axis->set_shader_program(program);
+	z_axis->set_shader_program(program);
+}
+void grid::draw() {
+	x_axis->draw();
+	y_axis->draw();
+	z_axis->draw();
+}
 
 shapes::shapes() : render_object() {
 	height = 0;
@@ -195,7 +232,7 @@ triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float*
 };
 void triangle::gen_position_buffer() {
 	glm::vec3 vertex;
-	position_buffer = new glm::vec3[3];
+	position_buffer = new glm::vec3[total_vertices];
 
 	vertex.y = position.y - height / 2;
 	vertex.x  = position.x - base / 2;

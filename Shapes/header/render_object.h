@@ -19,14 +19,11 @@ protected:
 
 public:
 	has_color(glm::vec4 color, int vertices);
-};
-class has_multi_color : public color_delegate {
-protected:
-	glm::vec4* colors;
 
-public:
-	has_multi_color(glm::vec4* colors, int num_colors, int vertices);
+
+	glm::vec4 get_color();
 };
+
 class non_color : public color_delegate {
 };
 
@@ -54,6 +51,8 @@ public:
 	virtual void gen_normal_buffer();
 	virtual void draw();
 
+	glm::vec3 get_position();
+	
 protected:
 	int total_vertices;
 	glm::vec3 position;
@@ -76,23 +75,32 @@ protected:
 
 public:
 	line();
-	line(glm::vec4 color, float len);
+	line(float len, int orent, glm::vec4 color, glm::vec3 pos);
+	void gen_vertices_buffer() override;
+	void draw() override;
 
 private:
 	void gen_position_buffer() override;
 };
 
 /*----- Header for class grid -----*/
-class grid : public render_object {
+class grid {
 	public:
 		grid();
 		grid(glm::vec3 position, glm::vec4* colors, float len, float dep, float hei);
-		void gen_position_buffer() override;
+		void gen_vertices_buffer();
+		void set_shader_program(shader_program* program);
+		void draw();
 
 	private:
+		line* x_axis = NULL;
+		line* y_axis = NULL;
+		line* z_axis = NULL;
+
 		float length;
 		float depth;
 		float height;
+
 };
 
 /*----- Header for abstract class shape -----*/
