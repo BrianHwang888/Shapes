@@ -1,5 +1,6 @@
 #include "../header/shader.h"
 
+shader_program::shader_program() { ID = -1; }
 shader_program::shader_program(const char* vertex_path, const char* fragment_path) {
 	GLuint* shader_IDs;
 	GLint linked;

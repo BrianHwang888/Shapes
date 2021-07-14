@@ -23,7 +23,6 @@ public:
 
 	glm::vec4 get_color();
 };
-
 class non_color : public color_delegate {
 };
 
@@ -43,6 +42,9 @@ class non_normal : public normal_delegate {
 class render_object {
 public:
 	glm::mat4 model;
+	glm::vec3 translation;
+	glm::vec3 scale;
+	glm::vec3 rotation;
 
 	glm::vec3* get_position_buffer();
 	void set_shader_program(shader_program* program);
@@ -52,6 +54,9 @@ public:
 	virtual void draw();
 
 	glm::vec3 get_position();
+	glm::vec4 get_color();
+	GLuint get_shader_programID();
+	shader_program get_shader_program();
 	
 protected:
 	int total_vertices;
@@ -65,6 +70,7 @@ protected:
 
 	render_object();
 	render_object(int vertices, color_delegate* color, normal_delegate* normal, glm::vec3 pos);
+
 	virtual void gen_position_buffer() = 0;
 };
 
@@ -105,6 +111,7 @@ class grid {
 
 /*----- Header for abstract class shape -----*/
 class shapes : public render_object {
+
 protected:
 	float height;
 	float base;

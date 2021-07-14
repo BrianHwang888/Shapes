@@ -1,4 +1,7 @@
 ﻿  main.cpp
 c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(192): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  render_object.cpp
+  scene.cpp
+  Generating Code...
   Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe

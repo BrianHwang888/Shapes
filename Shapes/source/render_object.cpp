@@ -28,12 +28,19 @@ render_object::render_object(int vertices, color_delegate* color, normal_delegat
 	total_vertices = vertices;
 	this->color = color;
 	this->normal = normal;
-
+	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	translation = glm::vec3(0.0f, 0.0f, 0.0f);
+	scale = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 glm::vec3* render_object::get_position_buffer() {
 	return position_buffer;
 };
 glm::vec3 render_object::get_position() { return position; }
+glm::vec4 render_object::get_color() { 
+	if (color->color_buffer == NULL)
+		return glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	return color->color_buffer[0]; 
+}
 void render_object::set_shader_program(shader_program* program) {
 	this->program = program;
 };
@@ -122,7 +129,8 @@ void render_object::draw() {
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, total_vertices);
 };
-
+GLuint render_object::get_shader_programID() { return program->ID; }
+shader_program render_object::get_shader_program() { return *program; }
 line::line() {
 	length = 1.0f;
 };
@@ -174,7 +182,7 @@ void line::gen_vertices_buffer() {
 	glEnableVertexAttribArray(vertex_color);
 }
 void line::draw() {
-	//glUseProgram(program->ID);
+	glUseProgram(program->ID);
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_LINE, 0, total_vertices);
 }
@@ -206,11 +214,20 @@ void grid::set_shader_program(shader_program* program) {
 	z_axis->set_shader_program(program);
 }
 void grid::draw() {
+	shader_program axis_program;
+	
+	axis_program = x_axis->get_shader_program();
+	axis_program.set_mat4("model", x_axis->model);
 	x_axis->draw();
+
+	axis_program = y_axis->get_shader_program();
+	axis_program.set_mat4("model", y_axis->model);
 	y_axis->draw();
+
+	axis_program = z_axis->get_shader_program();
+	axis_program.set_mat4("model", z_axis->model);
 	z_axis->draw();
 }
-
 shapes::shapes() : render_object() {
 	height = 0;
 	base = 0;

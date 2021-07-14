@@ -231,6 +231,11 @@ void save_file() {
 
 	if (save_file == NULL || decision == 'Y') {
 		glm::vec3 shape_pos;
+		glm::vec3 shape_rot;
+		glm::vec3 shape_trans;
+		glm::vec3 shape_scal;
+		glm::vec4 shape_color;
+		glm::mat4 shape_model;
 		shape_node* shape_ptr;
 
 		fopen_s(&save_file, filename, "w");
@@ -238,6 +243,26 @@ void save_file() {
 		while (shape_ptr != NULL) {
 			shape_pos = shape_ptr->object->get_position();
 			fprintf_s(save_file, "%f %f %f\n", shape_pos.x, shape_pos.y, shape_pos.z);
+
+			shape_color = shape_ptr->object->get_color();
+			fprintf(save_file, "%f %f %f %f\n", shape_color.r, shape_color.g, shape_color.b, shape_color.a);
+
+			shape_rot = shape_ptr->object->rotation;
+			fprintf(save_file, "%f %f %f\n", shape_rot.x, shape_rot.y, shape_rot.z);
+
+			shape_trans = shape_ptr->object->translation;
+			fprintf(save_file, "%f %f %f\n", shape_trans.x, shape_trans.y, shape_trans.z);
+
+			shape_scal = shape_ptr->object->scale;
+			fprintf(save_file, "%f %f %f\n", shape_scal.x, shape_scal.y, shape_scal.z);
+
+			shape_model = shape_ptr->object->model;
+			for (int row = 0; row < 4; row++) {
+				for (int col = 0; col < 4; col++) {
+					fprintf(save_file, "%f ", shape_model[row][col]);
+				}
+				fprintf(save_file, "\n");
+			}
 			shape_ptr = shape_ptr->next;
 		}
 	}
