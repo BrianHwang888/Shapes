@@ -13,9 +13,9 @@
 #define WINDOW_HEIGHT 600
 
 //Linked list to hold shape objects
-struct shape_node {
-	shapes* object = NULL;
-	shape_node* next = NULL;
+struct shape2D_node {
+	shape_2D* object = NULL;
+	shape2D_node* next = NULL;
 };
 
 void init_window(int option);
@@ -35,8 +35,8 @@ float delta_time = 0.0f;
 float last_frame = 0.0f;
 
 shader_program* basic_program;
-shape_node shape_linked_list; 
-shape_node* shape_tail = &shape_linked_list;
+shape2D_node shape_linked_list;
+shape2D_node* shape_tail = &shape_linked_list;
 
 int main(void) {
 	glfwInit();
@@ -85,7 +85,7 @@ int main(void) {
 	right_triangle_measurements[1] = 10.0f;
 
 	//Create linked list of shapes
-	shape_tail = new shape_node;
+	shape_tail = new shape2D_node;
 	shape_tail->object = new triangle(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), true, right_triangle_measurements);
 	shape_tail->object->set_shader_program(basic_program);
 	shape_tail->object->gen_vertices_buffer();
@@ -103,7 +103,7 @@ int main(void) {
 	object_orentation.gen_vertices_buffer();
 
 	float current_frame;
-	shape_node* current_node;
+	shape2D_node* current_node;
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
 
 	//Rendering loop
@@ -193,7 +193,7 @@ void process_input(GLFWwindow* window) {
 		float y_angle = glm::radians(main_camera.pitch);
 		float x_angle = glm::radians(main_camera.yaw);
 		
-		shape_tail->next = new shape_node;
+		shape_tail->next = new shape2D_node;
 		shape_tail->next->object = new triangle(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), true, measurement);
 		shape_tail->next->object->set_shader_program(basic_program);
 		shape_tail->next->object->gen_vertices_buffer();
@@ -285,7 +285,7 @@ void save_file() {
 		glm::vec3 shape_scal;
 		glm::vec4 shape_color;
 		glm::mat4 shape_model;
-		shape_node* shape_ptr;
+		shape2D_node* shape_ptr;
 
 		//writing shape data into file
 		fopen_s(&save_file, filename, "w");

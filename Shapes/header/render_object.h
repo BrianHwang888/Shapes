@@ -124,24 +124,6 @@ class grid {
 
 };
 
-/*----- Header for abstract class shape -----*/
-class shapes : public render_object {
-
-protected:
-	float height; //measurement of height
-	float base; //measurement of lenght
-
-	//default constructor
-	shapes(); 
-
-	//shapes constructor; requires number of vertices, color delegate, normal delegate, array of measurements [2], spawing position
-	shapes(int vertices, color_attribute* color, normal_attribute* normal, float* measurements, glm::vec3 position); 
-
-private:
-	//override generating position data 
-	void gen_position_buffer() override;
-};
-
 /*----- Header for abstract class shape_2D -----*/
 class shape_2D : public render_object {
 protected:
@@ -173,7 +155,7 @@ protected:
 };
 
 /*----- Header for triangle class -----*/
-class triangle : public shapes {
+class triangle : public shape_2D {
 public:
 	triangle(); //default constuctor
 

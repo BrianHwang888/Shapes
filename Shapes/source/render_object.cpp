@@ -328,22 +328,6 @@ void grid::draw() {
 	z_axis->draw();
 }
 
-/*----- Definition for default constructor for shapes -----*/
-shapes::shapes() : render_object() {
-	height = 0;
-	base = 0;
-
-};
-
-/*----- Definition for constructor for shapes -----*/
-shapes::shapes(int vertices, color_attribute* color, normal_attribute* normal, float* measurements, glm::vec3 position) : render_object(vertices, color, normal, position){
-	height = measurements[0];
-	base = measurements[1];
-};
-
-/*----- Definition for gen_position_buffer (shapes) -----*/
-void shapes::gen_position_buffer() {}; //empty 
-
 /*----- Definitions for shape_2D -----*/
 shape_2D::shape_2D() {
 	number_sides = 0;
@@ -393,12 +377,12 @@ shape_3D::shape_3D(int vertices, color_attribute* color, normal_attribute* norma
 
 
 /*----- Definition for default constructor for triangle -----*/
-triangle::triangle() : shapes(){
+triangle::triangle() : shape_2D(){
 	
 };
 
 /*----- Definition for constructor for triangle -----*/
-triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements) : shapes(3, new color_attribute(color, 3), new normal_attribute(3), measurements, position) {
+triangle::triangle(glm::vec3 position, glm::vec4 color, bool has_normals, float* measurements) : shape_2D(3, new color_attribute(color, 3), new normal_attribute(3), measurements, position) {
 	gen_position_buffer();
 	if (has_normals)
 		gen_normal_buffer();
@@ -452,3 +436,4 @@ sphere::sphere(glm::vec3 position, glm::vec4 color, float radius, int num_seg, i
 	slice_angle = 180.0f / number_slices;
 };
 
+void sphere::gen_position_buffer() {};
