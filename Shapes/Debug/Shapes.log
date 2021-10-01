@@ -1,7 +1,19 @@
-﻿  main.cpp
-c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-c:\users\potatoe\source\repos\shapes\shapes\source\main.cpp(192): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  render_object.cpp
-  scene.cpp
-  Generating Code...
-  Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe
+﻿main.obj : error LNK2019: unresolved external symbol _glfwInit referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwTerminate referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwGetVersionString referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwWindowHint referenced in function "void __cdecl init_window(int)" (?init_window@@YAXH@Z)
+main.obj : error LNK2019: unresolved external symbol _glfwCreateWindow referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwWindowShouldClose referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwSetWindowShouldClose referenced in function "void __cdecl keyboard_input_callback(struct GLFWwindow *,int,int,int,int)" (?keyboard_input_callback@@YAXPAUGLFWwindow@@HHHH@Z)
+main.obj : error LNK2019: unresolved external symbol _glfwSetFramebufferSizeCallback referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwPollEvents referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwSetInputMode referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwGetKey referenced in function "void __cdecl process_input(struct GLFWwindow *)" (?process_input@@YAXPAUGLFWwindow@@@Z)
+main.obj : error LNK2019: unresolved external symbol _glfwSetKeyCallback referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwSetCursorPosCallback referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwGetTime referenced in function "void __cdecl keyboard_input_callback(struct GLFWwindow *,int,int,int,int)" (?keyboard_input_callback@@YAXPAUGLFWwindow@@HHHH@Z)
+main.obj : error LNK2019: unresolved external symbol _glfwMakeContextCurrent referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwSwapBuffers referenced in function _main
+main.obj : error LNK2019: unresolved external symbol _glfwGetProcAddress referenced in function _main
+C:\Program Files (x86)\Windows Kits\10\lib\10.0.19041.0\um\x86\glfw3.lib : warning LNK4272: library machine type 'x64' conflicts with target machine type 'x86'
+C:\Users\potatoe\source\repos\Shapes\Debug\Shapes.exe : fatal error LNK1120: 17 unresolved externals
