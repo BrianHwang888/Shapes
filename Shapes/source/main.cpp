@@ -102,6 +102,10 @@ int main(void) {
 	object_orentation.set_shader_program(basic_program);
 	object_orentation.gen_vertices_buffer();
 
+	sphere main_sphere(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 1.0f, 3, 3);
+	main_sphere.set_shader_program(basic_program);
+	main_sphere.gen_vertices_buffer();
+
 	float current_frame;
 	shape2D_node* current_node;
 	glClearColor(0.529f, 0.807f, 0.92f, 1.0f);
@@ -137,8 +141,9 @@ int main(void) {
 			current_node->object->draw();
 			current_node = current_node->next;
 		} 
-		basic_program->set_int("is_non_shaded", non_shaded);
-		object_orentation.draw();
+		basic_program->set_mat4("model", main_sphere.get_model_mat());
+		main_sphere.draw();
+		
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

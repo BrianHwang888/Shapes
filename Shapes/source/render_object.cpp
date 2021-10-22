@@ -187,8 +187,8 @@ void render_object::gen_normal_buffer() {
 
 	//Generates normal data; cross product between i element and i + 1 and i + 2
 	for (int i = 0; i < total_vertices; i += 3) {
-		u = position_buffer[i + 2] - position_buffer[i];
-		v = position_buffer[i + 1] - position_buffer[i];
+		u = position_buffer[i + 1] - position_buffer[i];
+		v = position_buffer[i + 2] - position_buffer[i];
 		norm = glm::normalize(glm::cross(u, v));
 
 		normal->normal_buffer[i] = norm;
@@ -210,6 +210,14 @@ GLuint render_object::get_shader_programID() { return program->ID; }
 
 /*----- Definition for get_shader_program -----*/
 shader_program render_object::get_shader_program() { return *program; }
+
+void render_object::create_color_attribute(glm::vec4 color) {
+	this->color = new color_attribute(color, total_vertices);
+};
+
+void render_object::create_normal_attribute() {
+	normal = new normal_attribute(total_vertices);
+};
 
 /*----- Definition for default line constuctor -----*/
 line::line() {
@@ -397,10 +405,10 @@ void triangle::gen_position_buffer() {
 	vertex.y = position.y - height / 2;
 	vertex.x  = position.x - base / 2;
 	vertex.z = position.z;
-	position_buffer[0] = vertex;
+	position_buffer[1] = vertex;
 
 	vertex.y += height;
-	position_buffer[1] = vertex;
+	position_buffer[0] = vertex;
 
 
 	vertex.y -= height;
@@ -426,6 +434,7 @@ sphere::sphere(glm::vec3 position, glm::vec4 color, float radius, int num_seg, i
 	}
 	this->position = position;
 	this->color = new color_attribute(color, total_vertices);
+	this->normal = new normal_attribute(total_vertices);
 	this->radius = radius;
 	diameter = radius * 2;
 	length = height = depth = diameter;
@@ -434,6 +443,57 @@ sphere::sphere(glm::vec3 position, glm::vec4 color, float radius, int num_seg, i
 	number_slices = num_slice;
 	segment_angle = 360.0f / number_segments;
 	slice_angle = 180.0f / number_slices;
+	gen_position_buffer();
 };
 
-void sphere::gen_position_buffer() {};
+void sphere::gen_position_buffer() {
+	glm::vec3 vertex, north_pole, south_pole, origin;
+	int total_pole_vertices, curr_slice;
+	glm::mat4 rotation_x, rotation_y;
+	position_buffer = new glm::vec3[total_vertices];
+	total_pole_vertices = number_slices * 3;
+
+	curr_slice = 0;
+	origin = glm::vec3(0.0f, 0.0f, 0.0f);
+	north_pole = south_pole = origin;
+	north_pole.y += radius;
+	south_pole.y -= radius;
+
+	//rotation matrices for vertex points
+	rotation_x = glm::rotate(rotation_x, glm::radians(slice_angle), glm::vec3(1.0f, 0.0f, 0.0f));
+	rotation_y = glm::rotate(rotation_y, glm::radians(segment_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	//Creating north pole
+	//Creating position data for north pole
+	vertex = north_pole;
+	vertex = rotation_x * glm::vec4(vertex, 1.0f);
+	north_pole += position;
+	for (int i = 0; i < total_pole_vertices; i += 3) {
+		position_buffer[i] = north_pole;
+		position_buffer[i + 1] = vertex + position;
+
+		vertex = rotation_y * glm::vec4(vertex, 1.0f);
+		position_buffer[i + 2] = vertex + position;
+	}
+	
+	//Creating mid section
+	for (int i = total_pole_vertices; i < total_vertices - total_pole_vertices; i += 6) {
+
+		
+	}
+
+	curr_slice = 0;
+	//Creating south pole
+	vertex = south_pole;
+	vertex = -rotation_x * glm::vec4(vertex, 1.0f);
+	vertex.y *= -1;
+	south_pole += position;
+	for (int i = total_vertices - total_pole_vertices; i < total_vertices; i += 3) {
+		position_buffer[i] = south_pole;
+		position_buffer[i + 1] = vertex + position;
+
+		vertex = rotation_y * glm::vec4(vertex, 1.0f);
+		position_buffer[i + 2] = vertex + position;
+	}
+
+};

@@ -6,6 +6,7 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
 #include"shader.h"
 
 enum class dimensions {
@@ -32,29 +33,22 @@ public:
 /*-----Header for abstract class render_object-----*/
 class render_object {
 public:
-	glm::vec3* get_position_buffer(); //returns position buffer of object
-	
-	//assigns shader program to render_object
-	void set_shader_program(shader_program* program);
-	
 	/*generates data for vertices buffer; data at least has posistion of vertices; 
 	generates color, and normal if applicable to object*/
 	virtual void gen_vertices_buffer(); 
-	
 	//generates normal data in normal buffer ONLY IF OBJECT HAS NORMAL DATA
 	virtual void gen_normal_buffer(); 
 	virtual void draw(); //draw function to draw object during rendering sequence
 
 	/*----- Getter functions -----*/
+	glm::vec3* get_position_buffer(); //returns position buffer of object
 	glm::vec3 get_position(); //returns position of object
 	glm::vec4 get_color(); //returns color of object
 	glm::mat4 get_model_mat(); //returns model matrix of object
-	
 	/*returns net translations of object AKA the object's 
 	displacement from it's spawned position*/
 	glm::vec3 get_translation(); 
 	glm::vec3 get_scale(); //returns net scaling of object
-
 	/*returns the angle of net rotations of object in degrees; 
 	each vector component corrisponds to the angle of rotation for each respective axis; 
 	x:roll, y:yaw, z:pitch*/
@@ -62,7 +56,14 @@ public:
 	GLuint get_shader_programID(); //returns assigned ID of shader program for this object
 	shader_program get_shader_program(); //returns assigned shader_program object for this object
 
+	/*----- Setter functions -----*/
+	//assigns shader program to render_object
+	void set_shader_program(shader_program* program);
 	void set_model_mat(glm::mat4 model_mat); //sets model matrix of this object
+
+	/*----- Create attribute functions -----*/
+	void create_color_attribute(glm::vec4 color);
+	void create_normal_attribute();
 	
 	
 protected:

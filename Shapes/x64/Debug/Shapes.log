@@ -1,6 +1,9 @@
 ﻿  render_object.cpp
 C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(205,32): warning C4244: 'argument': conversion from 'unsigned __int64' to 'GLsizei', possible loss of data
-C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(276,27): warning C4244: 'argument': conversion from 'unsigned __int64' to 'GLsizei', possible loss of data
-C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(428,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(215,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(219,32): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(284,27): warning C4244: 'argument': conversion from 'unsigned __int64' to 'GLsizei', possible loss of data
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(436,43): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(437,38): warning C4244: 'argument': conversion from 'unsigned __int64' to 'int', possible loss of data
+C:\Users\potatoe\source\repos\Shapes\Shapes\source\render_object.cpp(491,13): warning C4244: 'initializing': conversion from 'unsigned __int64' to 'int', possible loss of data
   Shapes.vcxproj -> C:\Users\potatoe\source\repos\Shapes\x64\Debug\Shapes.exe
